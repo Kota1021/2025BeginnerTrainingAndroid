@@ -1689,20 +1689,18 @@ UI の表示処理を主に担うレイヤーです。UI 層はさらに以下�
 
 ```kotlin
 data class MainUiState(
-    val items: List<String>,
+    val items: List<String> = emptyList(),
 )
 ```
 
 State Holder である ViewModel では UI の状態を UI State として公開します。
 
 ```kotlin
-class MainViewModel: ViewModel() {
-    var uiState = MutableStateFlow(
-        MainUiState(
-            items = emptyList(),
-        )
-    )
-        private set
+class MainViewModel : ViewModel() {
+    // 変更可能な StateFlow は private にして、外部からは変更できないようにする
+    private val _uiState = MutableStateFlow(MainUiState())
+    // 外部には変更不可な StateFlow を公開する
+    val uiState = _uiState.asStateFlow()
 }
 
 ```
