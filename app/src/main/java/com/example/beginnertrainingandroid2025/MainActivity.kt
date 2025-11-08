@@ -12,9 +12,11 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.outlined.Star
+import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
+import androidx.compose.material3.TopAppBar
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -30,25 +32,11 @@ class MainActivity : ComponentActivity() {
         enableEdgeToEdge()
         setContent {
             BeginnerTrainingAndroid2025Theme {
-                Scaffold(modifier = Modifier.fillMaxSize()) { innerPadding ->
-                    Greeting(
-                        name = "Android",
-                        modifier = Modifier.padding(innerPadding)
-                    )
-                }
+                HomeScreen()
             }
         }
     }
 }
-
-@Composable
-fun Greeting(name: String, modifier: Modifier = Modifier) {
-    Text(
-        text = "Hello $name!",
-        modifier = modifier
-    )
-}
-
 
 @Composable
 fun RepoListItem(
@@ -100,28 +88,12 @@ private fun RepoListItemPreview(
     RepoListItem(repo = repo)
 }
 
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun HomeScreen(
-    repos: List<Repo>,
     modifier: Modifier = Modifier,
 ) {
-    Column(modifier = modifier) {
-        LazyColumn(modifier = modifier) {
-            items(
-                items = repos,
-                key = { it.id },
-            ) {
-                RepoListItem(repo = it)
-            }
-        }
-    }
-}
 
-@Preview(showBackground = true)
-@Composable
-private fun HomeScreenPreview(
-    @PreviewParameter(RepoPreviewParameterProvider::class) repo: Repo,
-) {
     val repos = List(1000) {
         Repo(
             id = it,
@@ -130,7 +102,33 @@ private fun HomeScreenPreview(
             stars = Random.nextInt(1000),
         )
     }
-    HomeScreen(
-        repos = repos,
+    Scaffold(
+        modifier = modifier,
+topBar = {
+    TopAppBar(
+        title = {
+            Text("ホーム")
+        }
     )
+}
+    ) { innerPadding ->
+        LazyColumn(
+            modifier = Modifier.padding(innerPadding),
+            ) {
+                items(
+                    items = repos,
+                    key = { it.id },
+                ) {
+                    RepoListItem(repo = it)
+                }
+            }
+    }
+}
+
+@Preview(showBackground = true)
+@Composable
+private fun HomeScreenPreview(
+    @PreviewParameter(RepoPreviewParameterProvider::class) repo: Repo,
+) {
+    HomeScreen()
 }
