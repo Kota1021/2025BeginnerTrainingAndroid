@@ -8,6 +8,8 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.items
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.outlined.Star
 import androidx.compose.material3.Icon
@@ -20,6 +22,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.tooling.preview.PreviewParameter
 import androidx.compose.ui.tooling.preview.PreviewParameterProvider
 import com.example.beginnertrainingandroid2025.ui.theme.BeginnerTrainingAndroid2025Theme
+import kotlin.random.Random
 
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -95,4 +98,39 @@ private fun RepoListItemPreview(
     @PreviewParameter(RepoPreviewParameterProvider::class) repo: Repo,
 ) {
     RepoListItem(repo = repo)
+}
+
+@Composable
+fun HomeScreen(
+    repos: List<Repo>,
+    modifier: Modifier = Modifier,
+) {
+    Column(modifier = modifier) {
+        LazyColumn(modifier = modifier) {
+            items(
+                items = repos,
+                key = { it.id },
+            ) {
+                RepoListItem(repo = it)
+            }
+        }
+    }
+}
+
+@Preview(showBackground = true)
+@Composable
+private fun HomeScreenPreview(
+    @PreviewParameter(RepoPreviewParameterProvider::class) repo: Repo,
+) {
+    val repos = List(1000) {
+        Repo(
+            id = it,
+            name = "repo$it",
+            description = if (it.mod(2) == 0) "This is awesome repository" else null,
+            stars = Random.nextInt(1000),
+        )
+    }
+    HomeScreen(
+        repos = repos,
+    )
 }
