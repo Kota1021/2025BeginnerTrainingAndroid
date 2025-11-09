@@ -3,8 +3,8 @@ package com.example.beginnertrainingandroid2025
 class RepoRepository(
     private val localDataSource: RepoLocalDataSource,
     private val remoteDataSource: RepoRemoteDataSource,
-    ) {
-    suspend fun getRepoList(): List<Repo> {
+    ): GithubRepoRepository {
+    override suspend fun getRepoList(): List<Repo> {
         return localDataSource.getRepoList().ifEmpty {
             val repoList = remoteDataSource.getRepoList()
             localDataSource.saveRepoList(repoList)
@@ -12,15 +12,15 @@ class RepoRepository(
         }
     }
 
-    suspend fun saveAsBookmark(repo: Repo) {
+    override suspend fun saveAsBookmark(repo: Repo) {
         localDataSource.saveAsBookmark(repo)
     }
 
-    suspend fun saveAsUnBookmark(repo: Repo) {
+    override suspend fun saveAsUnBookmark(repo: Repo) {
         localDataSource.saveAsUnBookmark(repo)
     }
 
-    suspend fun getBookmarkedRepoList(): List<Repo> {
+    override suspend fun getBookmarkedRepoList(): List<Repo> {
         return localDataSource.getBookmarkRepoList()
     }
 }

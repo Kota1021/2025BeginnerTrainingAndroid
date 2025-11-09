@@ -7,7 +7,7 @@ import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 
 class HomeViewModel(
-    private val  repository: RepoRepository,
+    private val  repository: GithubRepoRepository,
 ): ViewModel() {
     var uiState = MutableStateFlow(
         HomeUiState(

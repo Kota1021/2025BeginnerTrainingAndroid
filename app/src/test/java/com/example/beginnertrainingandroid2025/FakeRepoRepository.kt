@@ -1,0 +1,30 @@
+package com.example.beginnertrainingandroid2025
+
+import kotlinx.coroutines.delay
+
+class FakeRepoRepository(
+    private val repos: List<Repo>,
+    bookmarkedRepos: List<Repo>,
+) : GithubRepoRepository {
+    private val _bookmarkedRepos: MutableList<Repo> = bookmarkedRepos.toMutableList()
+
+    override suspend fun getRepoList(): List<Repo> {
+        delay(100)
+        return repos
+    }
+
+    override suspend fun saveAsBookmark(repo: Repo) {
+        delay(100)
+        _bookmarkedRepos.add(repo)
+    }
+
+    override suspend fun saveAsUnBookmark(repo: Repo) {
+        delay(100)
+        _bookmarkedRepos.remove(repo)
+    }
+
+    override suspend fun getBookmarkedRepoList(): List<Repo> {
+        delay(100)
+        return _bookmarkedRepos
+    }
+}
