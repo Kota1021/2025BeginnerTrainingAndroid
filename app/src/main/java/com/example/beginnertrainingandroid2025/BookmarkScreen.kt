@@ -43,7 +43,7 @@ private fun BookmarkScreen(
         topBar = {
             TopAppBar(
                 title = {
-                    Text("ホーム")
+                    Text("ブックマーク")
                 }
             )
         }
@@ -52,7 +52,7 @@ private fun BookmarkScreen(
             modifier = Modifier.padding(innerPadding),
         ) {
             items(
-                items = uiState.items,
+                items = uiState.bookmarkedRepos.toList(),
                 key = { it.id },
             ) {
                 RepoListItem(
