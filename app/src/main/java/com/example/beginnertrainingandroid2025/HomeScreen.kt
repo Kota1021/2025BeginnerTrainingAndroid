@@ -23,6 +23,7 @@ import kotlin.random.Random
 
 data class HomeUiState(
     val items: List<Repo>,
+    val bookmarkedRepos: Set<Repo>,
 )
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -38,6 +39,7 @@ fun HomeScreen(
     HomeScreen(
         uiState = uiState,
         modifier = modifier,
+        onBookmarkIconClick = viewModel::onBookmarkIconClick,
     )
 }
 
@@ -45,7 +47,8 @@ fun HomeScreen(
 @Composable
 private fun HomeScreen(
     modifier: Modifier,
-    uiState: HomeUiState
+    uiState: HomeUiState,
+    onBookmarkIconClick: (Repo) -> Unit,
 ) {
     Scaffold(
         modifier = modifier,
@@ -64,7 +67,11 @@ private fun HomeScreen(
                 items = uiState.items,
                 key = { it.id },
             ) {
-                RepoListItem(repo = it)
+                RepoListItem(
+                    repo = it,
+                    isBookmarked = uiState.bookmarkedRepos.contains(it),
+                    onBookmarkIconClick = onBookmarkIconClick
+                )
             }
         }
     }

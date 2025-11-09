@@ -12,6 +12,7 @@ class HomeViewModel(
     var uiState = MutableStateFlow(
         HomeUiState(
             items = emptyList(),
+            bookmarkedRepos = emptySet()
         )
     )
         private set
@@ -23,6 +24,18 @@ class HomeViewModel(
                     items = repository.getRepoList(),
                 )
             }
+        }
+    }
+
+    fun onBookmarkIconClick(repo: Repo) {
+        uiState.update {
+            val bookmarkedRepos = if (repo in uiState.value.bookmarkedRepos) {
+                it.bookmarkedRepos - repo
+            } else {
+                it.bookmarkedRepos + repo
+            }
+
+            it.copy(bookmarkedRepos = bookmarkedRepos)
         }
     }
     companion object {
