@@ -8,8 +8,12 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import androidx.lifecycle.viewmodel.compose.viewModel
 import io.ktor.client.HttpClient
 import io.ktor.client.engine.cio.CIO
 import io.ktor.client.plugins.contentnegotiation.ContentNegotiation
@@ -17,11 +21,31 @@ import io.ktor.serialization.kotlinx.json.json
 import kotlinx.serialization.json.Json
 import kotlin.random.Random
 
+data class HomeUiState(
+    val items: List<Repo>,
+)
+
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun HomeScreen(
     modifier: Modifier = Modifier,
-    repos: List<Repo>,
+    viewModel: HomeViewModel = viewModel(factory = HomeViewModel.Factory),
+) {
+    val uiState by viewModel.uiState.collectAsStateWithLifecycle()
+    LaunchedEffect(Unit) {
+        viewModel.onLaunched()
+    }
+    HomeScreen(
+        uiState = uiState,
+        modifier = modifier,
+    )
+}
+
+@OptIn(ExperimentalMaterial3Api::class)
+@Composable
+private fun HomeScreen(
+    modifier: Modifier,
+    uiState: HomeUiState
 ) {
     Scaffold(
         modifier = modifier,
@@ -30,19 +54,19 @@ fun HomeScreen(
                 title = {
                     Text("ホーム")
                 }
-             )
+            )
         }
     ) { innerPadding ->
         LazyColumn(
             modifier = Modifier.padding(innerPadding),
+        ) {
+            items(
+                items = uiState.items,
+                key = { it.id },
             ) {
-                items(
-                    items = repos,
-                    key = { it.id },
-                ) {
-                    RepoListItem(repo = it)
-                }
+                RepoListItem(repo = it)
             }
+        }
     }
 }
 
@@ -58,7 +82,7 @@ private fun HomeScreenPreview(
             stars = Random.nextInt(1000),
         )
     }
-    HomeScreen(repos = repos)
+    HomeScreen()
 }
 
 // HTTPクライアントオブジェクトの生成コストは低くはないので、インスタンスを使いまわせるようグローバル空間で生成しておく
