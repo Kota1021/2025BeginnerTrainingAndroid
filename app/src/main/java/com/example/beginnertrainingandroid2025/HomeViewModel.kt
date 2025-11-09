@@ -22,20 +22,23 @@ class HomeViewModel(
             uiState.update {
                 it.copy(
                     items = repository.getRepoList(),
-                )
+                    bookmarkedRepos = repository.getBookmarkedRepoList().toSet(),
+                    )
             }
         }
     }
 
     fun onBookmarkIconClick(repo: Repo) {
-        uiState.update {
-            val bookmarkedRepos = if (repo in uiState.value.bookmarkedRepos) {
-                it.bookmarkedRepos - repo
-            } else {
-                it.bookmarkedRepos + repo
-            }
+        viewModelScope.launch {
+            uiState.update {
+                val bookmarkedRepos = if (repo in uiState.value.bookmarkedRepos) {
+                    it.bookmarkedRepos - repo
+                } else {
+                    it.bookmarkedRepos + repo
+                }
 
-            it.copy(bookmarkedRepos = bookmarkedRepos)
+                it.copy(bookmarkedRepos = repository.getBookmarkedRepoList().toSet())
+            }
         }
     }
     companion object {
@@ -46,6 +49,7 @@ class HomeViewModel(
                 HomeViewModel(
                     repository = RepoRepository(
                         remoteDataSource = RepoRemoteDataSource(),
+                        localDataSource = LocalDataSourceFactory.createRepoLocalDataSource(),
                     ),
                 ) as T
         }
