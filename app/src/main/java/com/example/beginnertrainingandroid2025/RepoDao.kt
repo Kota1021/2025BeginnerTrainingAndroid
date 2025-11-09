@@ -22,7 +22,7 @@ interface RepoDao {
     @Query("""
         SELECT *
         FROM repo
-        WHERE id IN bookmark_repo
+        WHERE id IN (SELECT repo_id FROM bookmark_repo)
     """)
     suspend fun findAllBookmark(): List<RepoEntity>
 }

@@ -30,13 +30,13 @@ class HomeViewModel(
 
     fun onBookmarkIconClick(repo: Repo) {
         viewModelScope.launch {
-            uiState.update {
-                val bookmarkedRepos = if (repo in uiState.value.bookmarkedRepos) {
-                    it.bookmarkedRepos - repo
-                } else {
-                    it.bookmarkedRepos + repo
-                }
+            if (repo in uiState.value.bookmarkedRepos) {
+                repository.saveAsUnBookmark(repo)
+            } else {
+                repository.saveAsBookmark(repo)
+            }
 
+            uiState.update {
                 it.copy(bookmarkedRepos = repository.getBookmarkedRepoList().toSet())
             }
         }

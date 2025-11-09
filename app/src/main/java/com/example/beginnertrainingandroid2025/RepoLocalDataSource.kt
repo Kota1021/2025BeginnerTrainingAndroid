@@ -17,7 +17,7 @@ class RepoLocalDataSource(
         dao.deleteBookmark(repo.toBookmarkEntity())
     }
 
-    suspend fun getBookmarkRepoListFlow(): List<Repo> {
+    suspend fun getBookmarkRepoList(): List<Repo> {
         return dao.findAllBookmark().map { it.toModel() }
     }
 }
